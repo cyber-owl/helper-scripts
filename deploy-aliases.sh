@@ -74,9 +74,9 @@ function owl-helpers-deploy-zip() {
   local REPO_NAME=$(basename "$PWD")
   local GIT_HASH=$(git rev-parse --short HEAD)
   
-  owl-helpers-validate-git-branch $CHECK_BRANCH && \
-    owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $INCLUDE_SUBMODULES &&\
-    aws codebuild start-build --no-cli-pager \
+  owl-helpers-validate-git-branch $CHECK_BRANCH \
+    && owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $INCLUDE_SUBMODULES \
+    && aws codebuild start-build --no-cli-pager \
       --project owl-codebuild \
       --source-location-override deploy-zip-sources/${REPO_NAME}/${COMPOSE_SERVICE_NAME}/${GIT_HASH}.zip \
       --environment-variables-override name=GIT_HASH,value=${GIT_HASH},type=PLAINTEXT \
@@ -86,7 +86,6 @@ function owl-helpers-deploy-zip() {
         name=SLACK_CHANNEL_NAME,value=${SLACK_CHANNEL_NAME},type=PLAINTEXT \
         name=ECR_REPOSITORY,value=${ECR_REPOSITORY},type=PLAINTEXT \
         name=IMAGE_TAG,value=${GIT_HASH},type=PLAINTEXT
-    # codebuildの通知は以下のlambdaを使用
-    # https://ap-northeast-1.console.aws.amazon.com/lambda/home?region=ap-northeast-1#/functions/codebuild-notification?tab=code
-  fi
+  # codebuildの通知は以下のlambdaを使用
+  # https://ap-northeast-1.console.aws.amazon.com/lambda/home?region=ap-northeast-1#/functions/codebuild-notification?tab=code
 }
