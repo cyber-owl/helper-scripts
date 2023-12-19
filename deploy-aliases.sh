@@ -49,6 +49,21 @@ function owl-helpers-merge-zip() {
   rm -rf code_zips merge_unzip .merge_unzip_append deploy-${GIT_HASH}.zip
 }
 
+function owl-helpers-validate-git-branch() {
+  local CHECK_BRANCH=$1
+  git fetch origin $CHECK_BRANCH
+  ORIGIN_MASTER=$(git show-ref origin/$CHECK_BRANCH -s)
+  CURRENT=$(git rev-parse HEAD)
+  if [[ "$ORIGIN_MASTER" != "$CURRENT" ]]; then
+    echo "origin/$CHECK_BRANCH と一致していないのでビルドできません";
+    # return error
+    return 1
+  else
+    echo 'git diff をチェックしてビルドします。コミットされてなければビルドできません';
+    git diff --exit-code --quiet && git diff --staged --exit-code
+  fi
+}
+
 function owl-helpers-deploy-zip() {
   local CHECK_BRANCH=$1
   local COMPOSE_SERVICE_NAME=$2
@@ -57,19 +72,13 @@ function owl-helpers-deploy-zip() {
   local SLACK_CHANNEL_NAME=$5
   local INCLUDE_SUBMODULES=${6-false}
   local REPO_NAME=$(basename "$PWD")
+  local GIT_HASH=$(git rev-parse --short HEAD)
 
+  owl-helpers-validate-git-branch
   git fetch origin $CHECK_BRANCH
-  ORIGIN_DEPLOY=$(git show-ref origin/$CHECK_BRANCH -s)
-  CURRENT=$(git rev-parse HEAD)
 
-  if [[ "$ORIGIN_DEPLOY" != "$CURRENT" ]]; then
-    echo "origin/${CHECK_BRANCH} と一致していないのでビルドできません";
-    return 1
-  else
-    local GIT_HASH=$(git rev-parse --short HEAD)
-    echo 'git diff をチェックしてビルドします。コミットされてなければビルドできません';
-    git diff --exit-code && \
-    git diff --staged --exit-code && \
+  
+  owl-helpers-validate-git-branch $CHECK_BRANCH && \
     owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $INCLUDE_SUBMODULES &&\
     aws codebuild start-build --no-cli-pager \
       --project owl-codebuild \
