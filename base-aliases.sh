@@ -4,7 +4,7 @@ if __name__ == '__main__':
   payload = json.loads(''.join(sys.stdin.readlines()))
   secrets = json.loads(payload['SecretString'])
   print(
-    '\n'.join(
+    '\\n'.join(
       [
         f'{x}={v}' for (x,v) in secrets.items()
       ]
