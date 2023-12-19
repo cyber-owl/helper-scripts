@@ -12,3 +12,68 @@ function owl-helpers-login-aws() {
   fi
 }
 
+function owl-helpers-merge-zip() {
+  local compose_service_name=$1
+  local GIT_HASH=$2
+  local INCLUDE_SUBMODULES=$3
+  local main_repo_name=$(basename "$PWD")
+  local main_repo_path=$(pwd)
+
+  mkdir code_zips merge_unzip
+  git archive --format=zip --output="./code_zips/${main_repo_name}" HEAD
+
+  if [[ "$INCLUDE_SUBMODULES" == "true" ]]; then
+    git submodule foreach 'repo_name=$(basename "$PWD") && parent_dir=$(dirname "$(pwd)") && git archive --format=zip --output="${parent_dir}/code_zips/${repo_name}" HEAD'
+  fi
+
+  unzip "code_zips/${main_repo_name}" -d "./merge_unzip/${main_repo_name}"
+  for zip_path in code_zips/*; do
+    repo_name="${zip_path#code_zips/}"
+    if [ "$main_repo_name" != "$repo_name" ]; then
+      # always overwrite directroy when submodule repo
+      unzip -o ${zip_path} -d "./merge_unzip/${main_repo_name}/${repo_name}"
+    fi
+  done
+  cd merge_unzip/${main_repo_name}
+  zip -rA "${main_repo_path}/deploy-${GIT_HASH}.zip" .
+  cd ${main_repo_path}
+  aws s3 cp deploy-${GIT_HASH}.zip "s3://deploy-zip-sources/${main_repo_name}/${compose_service_name}/${GIT_HASH}.zip"
+  rm -rf code_zips merge_unzip deploy-${GIT_HASH}.zip
+}
+
+function owl-helpers-deploy-zip() {
+  local CHECK_BRANCH=$1
+  local COMPOSE_SERVICE_NAME=$2
+  local ECR_REPOSITORY=$3
+  local SLACK_CHANNEL_ID=$4
+  local SLACK_CHANNEL_NAME=$5
+  local INCLUDE_SUBMODULES=${6-false}
+  local REPO_NAME=$(basename "$PWD")
+
+  git fetch origin $CHECK_BRANCH
+  ORIGIN_DEPLOY=$(git show-ref origin/$CHECK_BRANCH -s)
+  CURRENT=$(git rev-parse HEAD)
+
+  if [[ "$ORIGIN_DEPLOY" != "$CURRENT" ]]; then
+    echo "origin/${CHECK_BRANCH} と一致していないのでビルドできません";
+    return 1
+  else
+    local GIT_HASH=$(git rev-parse --short HEAD)
+    echo 'git diff をチェックしてビルドします。コミットされてなければビルドできません';
+    git diff --exit-code && \
+    git diff --staged --exit-code && \
+    owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $GIT_HASH $INCLUDE_SUBMODULES &&\
+    aws codebuild start-build --no-cli-pager \
+      --project owl-codebuild \
+      --source-location-override deploy-zip-sources/${REPO_NAME}/${COMPOSE_SERVICE_NAME}/${GIT_HASH}.zip \
+      --environment-variables-override name=GIT_HASH,value=${GIT_HASH},type=PLAINTEXT \
+        name=COMPOSE_SERVICE_NAME,value=${COMPOSE_SERVICE_NAME},type=PLAINTEXT \
+        name=REPOSITORY,value=${REPO_NAME},type=PLAINTEXT \
+        name=SLACK_CHANNEL_ID,value=${SLACK_CHANNEL_ID},type=PLAINTEXT \
+        name=SLACK_CHANNEL_NAME,value=${SLACK_CHANNEL_NAME},type=PLAINTEXT \
+        name=ECR_REPOSITORY,value=${ECR_REPOSITORY},type=PLAINTEXT \
+        name=IMAGE_TAG,value=${GIT_HASH},type=PLAINTEXT
+    # codebuildの通知は以下のlambdaを使用
+    # https://ap-northeast-1.console.aws.amazon.com/lambda/home?region=ap-northeast-1#/functions/codebuild-notification?tab=code
+  fi
+}
