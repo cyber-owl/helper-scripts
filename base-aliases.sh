@@ -11,4 +11,4 @@ if __name__ == '__main__':
     )
   )"
 
-alias create-extract-secrets-py="echo \"${extract-secrets-py}\" > extract-secrets.py"
+alias create-extract-secrets-py="echo \"${EXTRACT_SECRETS_PY}\" > extract-secrets.py"
