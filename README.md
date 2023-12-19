@@ -3,5 +3,9 @@
 ## extract-secrets.pyを作成
 ```bash
 curl https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/extract-secrets.py -s -o extract-secrets.py
-# source <(curl -s https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/create-extract-secrets-py.sh)
+```
+
+## デプロイ用alias初期化
+```bash
+source <(curl -s https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/deploy-aliases.sh)
 ```
