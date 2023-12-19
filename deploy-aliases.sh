@@ -1,5 +1,6 @@
 grep -qF -- "__pycache__" ".gitignore" || echo "\n__pycache__" >> ".gitignore"
 grep -qF -- "merge_unzip" ".gitignore" || echo "merge_unzip" >> ".gitignore"
+grep -qF -- ".merge_unzip_append" ".gitignore" || echo ".merge_unzip_append" >> ".gitignore"
 grep -qF -- "code_zips" ".gitignore" || echo "code_zips" >> ".gitignore"
 grep -qF -- "deploy-*" ".gitignore" || echo "deploy-*" >> ".gitignore"
 grep -qF -- "extract-secrets.py" ".gitignore" || echo "extract-secrets.py" >> ".gitignore"
@@ -25,7 +26,7 @@ function owl-helpers-merge-zip() {
   local main_repo_name=$(basename "$PWD")
   local main_repo_path=$(pwd)
 
-  mkdir code_zips merge_unzip
+  mkdir -p code_zips merge_unzip .merge_unzip_append
   git archive --format=zip --output="./code_zips/${main_repo_name}" HEAD
 
   if [[ "$INCLUDE_SUBMODULES" == "true" ]]; then
@@ -40,11 +41,12 @@ function owl-helpers-merge-zip() {
       unzip -o ${zip_path} -d "./merge_unzip/${main_repo_name}/${repo_name}"
     fi
   done
+  cp -rf .merge_unzip_append/* merge_unzip/${main_repo_name}/
   cd merge_unzip/${main_repo_name}
   zip -rA "${main_repo_path}/deploy-${GIT_HASH}.zip" .
   cd ${main_repo_path}
   aws s3 cp deploy-${GIT_HASH}.zip "s3://deploy-zip-sources/${main_repo_name}/${compose_service_name}/${GIT_HASH}.zip"
-  rm -rf code_zips merge_unzip deploy-${GIT_HASH}.zip
+  rm -rf code_zips merge_unzip .merge_unzip_append deploy-${GIT_HASH}.zip
 }
 
 function owl-helpers-deploy-zip() {
