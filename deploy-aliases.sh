@@ -20,8 +20,8 @@ function owl-helpers-login-aws() {
 
 function owl-helpers-merge-zip() {
   local compose_service_name=$1
-  local GIT_HASH=$2
-  local INCLUDE_SUBMODULES=$3
+  local INCLUDE_SUBMODULES=$2
+  local GIT_HASH=$(git rev-parse --short HEAD)
   local main_repo_name=$(basename "$PWD")
   local main_repo_path=$(pwd)
 
@@ -68,7 +68,7 @@ function owl-helpers-deploy-zip() {
     echo 'git diff をチェックしてビルドします。コミットされてなければビルドできません';
     git diff --exit-code && \
     git diff --staged --exit-code && \
-    owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $GIT_HASH $INCLUDE_SUBMODULES &&\
+    owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $INCLUDE_SUBMODULES &&\
     aws codebuild start-build --no-cli-pager \
       --project owl-codebuild \
       --source-location-override deploy-zip-sources/${REPO_NAME}/${COMPOSE_SERVICE_NAME}/${GIT_HASH}.zip \
