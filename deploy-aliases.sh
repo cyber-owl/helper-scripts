@@ -1,3 +1,9 @@
+grep -qF -- "__pycache__" ".gitignore" || echo "\n__pycache__" >> ".gitignore"
+grep -qF -- "merge_unzip" ".gitignore" || echo "merge_unzip" >> ".gitignore"
+grep -qF -- "code_zips" ".gitignore" || echo "code_zips" >> ".gitignore"
+grep -qF -- "deploy-*" ".gitignore" || echo "deploy-*" >> ".gitignore"
+grep -qF -- "extract-secrets.py" ".gitignore" || echo "extract-secrets.py" >> ".gitignore"
+
 function owl-helpers-login-aws() {
   local AWS_ACCOUNT_ID=$1
   local AWS_REGION=${2-ap-northeast-1}
