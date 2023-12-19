@@ -1,4 +1,4 @@
-EXTRACT_SECRETS_PY="import json,sys;
+OWL_HELPERS_EXTRACT_SECRETS_PY="import json,sys;
 
 if __name__ == '__main__':
   payload = json.loads(''.join(sys.stdin.readlines()))
@@ -11,4 +11,4 @@ if __name__ == '__main__':
     )
   )"
 
-alias create-extract-secrets-py="echo \"${EXTRACT_SECRETS_PY}\" > extract-secrets.py"
+alias owl-helpers-create-extract-secrets-py="echo \"${EXTRACT_SECRETS_PY}\" > extract-secrets.py"
