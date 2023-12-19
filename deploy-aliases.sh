@@ -73,10 +73,6 @@ function owl-helpers-deploy-zip() {
   local INCLUDE_SUBMODULES=${6-false}
   local REPO_NAME=$(basename "$PWD")
   local GIT_HASH=$(git rev-parse --short HEAD)
-
-  owl-helpers-validate-git-branch
-  git fetch origin $CHECK_BRANCH
-
   
   owl-helpers-validate-git-branch $CHECK_BRANCH && \
     owl-helpers-merge-zip $COMPOSE_SERVICE_NAME $INCLUDE_SUBMODULES &&\
