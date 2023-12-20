@@ -1,3 +1,4 @@
+#!/bin/bash
 grep -qF -- "__pycache__" ".gitignore" || echo "\n__pycache__" >> ".gitignore"
 grep -qF -- "merge_unzip" ".gitignore" || echo "merge_unzip" >> ".gitignore"
 grep -qF -- ".merge_unzip_append" ".gitignore" || echo ".merge_unzip_append" >> ".gitignore"
