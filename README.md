@@ -7,5 +7,7 @@ curl https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/extract-sec
 
 ## デプロイ用alias初期化
 ```bash
-source <(curl -s https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/deploy-aliases.sh)
+curl -s -o deploy-aliases.sh https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/deploy-aliases.sh \
+  && source deploy-aliases.sh \
+  && rm deploy-aliases.sh
 ```
