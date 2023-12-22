@@ -1,11 +1,12 @@
 #!/bin/bash
 grep -qF -- "__pycache__" ".gitignore" || echo "\n__pycache__" >> ".gitignore"
-grep -qF -- "merge_unzip" ".gitignore" || echo "merge_unzip" >> ".gitignore"
-grep -qF -- ".merge_unzip_append" ".gitignore" || echo ".merge_unzip_append" >> ".gitignore"
-grep -qF -- "code_zips" ".gitignore" || echo "code_zips" >> ".gitignore"
-grep -qF -- "deploy-*" ".gitignore" || echo "deploy-*" >> ".gitignore"
-grep -qF -- "extract-secrets.py" ".gitignore" || echo "extract-secrets.py" >> ".gitignore"
+grep -qF -- "merge_unzip" ".gitignore" || echo "\nmerge_unzip" >> ".gitignore"
+grep -qF -- ".merge_unzip_append" ".gitignore" || echo "\n.merge_unzip_append" >> ".gitignore"
+grep -qF -- "code_zips" ".gitignore" || echo "\ncode_zips" >> ".gitignore"
+grep -qF -- "deploy-*" ".gitignore" || echo "\ndeploy-*" >> ".gitignore"
+grep -qF -- "extract-secrets.py" ".gitignore" || echo "\nextract-secrets.py" >> ".gitignore"
 
+unset -f owl-helpers-login-aws 2> /dev/null
 function owl-helpers-login-aws() {
   local AWS_ACCOUNT_ID=$1
   local AWS_REGION=${2-ap-northeast-1}
@@ -20,6 +21,7 @@ function owl-helpers-login-aws() {
   fi
 }
 
+unset -f owl-helpers-merge-zip 2> /dev/null
 function owl-helpers-merge-zip() {
   local compose_service_name=$1
   local INCLUDE_SUBMODULES=$2
@@ -50,6 +52,7 @@ function owl-helpers-merge-zip() {
   rm -rf code_zips merge_unzip .merge_unzip_append deploy-${GIT_HASH}.zip
 }
 
+unset -f owl-helpers-validate-git-branch 2> /dev/null
 function owl-helpers-validate-git-branch() {
   local CHECK_BRANCH=$1
   git fetch origin $CHECK_BRANCH
@@ -65,6 +68,7 @@ function owl-helpers-validate-git-branch() {
   fi
 }
 
+unset -f owl-helpers-deploy-zip 2> /dev/null
 function owl-helpers-deploy-zip() {
   local CHECK_BRANCH=$1
   local COMPOSE_SERVICE_NAME=$2
