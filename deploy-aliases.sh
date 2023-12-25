@@ -36,12 +36,12 @@ function owl-helpers-merge-zip() {
     git submodule foreach 'repo_name=$(basename "$PWD") && parent_dir=$(dirname "$(pwd)") && git archive --format=zip --output="${parent_dir}/code_zips/${repo_name}" HEAD'
   fi
 
-  unzip -O utf-8 "code_zips/${main_repo_name}" -d "./merge_unzip/${main_repo_name}"
+  unzip "code_zips/${main_repo_name}" -d "./merge_unzip/${main_repo_name}"
   for zip_path in code_zips/*; do
     repo_name="${zip_path#code_zips/}"
     if [ "$main_repo_name" != "$repo_name" ]; then
       # always overwrite directroy when submodule repo
-      unzip -O utf-8 -o ${zip_path} -d "./merge_unzip/${main_repo_name}/${repo_name}"
+      unzip -o ${zip_path} -d "./merge_unzip/${main_repo_name}/${repo_name}"
     fi
   done
   cp -rf .merge_unzip_append/ merge_unzip/${main_repo_name}/
