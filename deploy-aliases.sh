@@ -99,8 +99,8 @@ function owl-helpers-deploy-zip() {
 }
 
 
-unset -f update_or_add_property 2> /dev/null
-function update-or-add-property() {
+unset -f owl-helpers-update-or-add-property 2> /dev/null
+function owl-helpers-update-or-add-property() {
     local property=$1
     local value=$2
     local file=$3
