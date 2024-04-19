@@ -114,8 +114,10 @@ function owl-helpers-update-or-add-property() {
         else
             sed -i "s/^$property=.*/$property=$value/" "$file"
         fi
+        echo Replaced $property in $file
     else
         # Property does not exist, add it
         echo "$property=$value" >> "$file"
+        echo Added $property to $file
     fi
 }
