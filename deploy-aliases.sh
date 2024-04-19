@@ -126,7 +126,7 @@ unset -f owl-helpers-fetch-secrets 2> /dev/null
 function owl-helpers-fetch-secrets() {
   local secret_id=$1
   local file=$2
-  curl https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/extract-secrets.py -s -o extract-secrets.py
-  aws secretsmanager get-secret-value --secret-id $secret_id --region ap-northeast-1 | python3 extract-secrets.py > $file
-  echo Downloaded secrets: $secret_id to $file
+  curl https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/extract-secrets.py -s -o extract-secrets.py \
+  && aws secretsmanager get-secret-value --secret-id $secret_id --region ap-northeast-1 | python3 extract-secrets.py > $file \
+  && echo Downloaded secrets: $secret_id to $file
 }
