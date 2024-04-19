@@ -97,3 +97,20 @@ function owl-helpers-deploy-zip() {
   # codebuildの通知は以下のlambdaを使用
   # https://ap-northeast-1.console.aws.amazon.com/lambda/home?region=ap-northeast-1#/functions/codebuild-notification?tab=code
 }
+
+
+unset -f update_or_add_property 2> /dev/null
+function update-or-add-property() {
+    local property=$1
+    local value=$2
+    local file=$3
+
+    # Check if the property exists
+    if grep -q "^$property=" "$file"; then
+        # Property exists, update it
+        sed -i "s/^$property=.*/$property=$value/" "$file"
+    else
+        # Property does not exist, add it
+        echo "$property=$value" >> "$file"
+    fi
+}
