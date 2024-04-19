@@ -108,7 +108,12 @@ function owl-helpers-update-or-add-property() {
     # Check if the property exists
     if grep -q "^$property=" "$file"; then
         # Property exists, update it
-        sed -i "s/^$property=.*/$property=$value/" "$file"
+        # Check if we are on macOS or Linux and use the correct sed syntax
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i "" "s/^$property=.*/$property=$value/" "$file"
+        else
+            sed -i "s/^$property=.*/$property=$value/" "$file"
+        fi
     else
         # Property does not exist, add it
         echo "$property=$value" >> "$file"
