@@ -2,7 +2,7 @@ import json
 import sys
 
 if __name__ == '__main__':
-    inline = sys.argv[1]
+    inline = sys.argv[1] if len(sys.argv) >= 2 else None
     payload = json.loads(''.join(sys.stdin.readlines()))
     secrets = json.loads(payload['SecretString'])
     if inline == 'inline':
