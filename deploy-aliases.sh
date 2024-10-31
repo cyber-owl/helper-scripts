@@ -69,6 +69,17 @@ function owl-helpers-validate-git-branch() {
     echo 'git diff をチェックしてビルドします。コミットされてなければビルドできません';
     git diff --exit-code --quiet && git diff --staged --exit-code
   fi
+
+  # owl-protoのチェック
+  cd owl-proto/
+  git fetch origin $CHECK_BRANCH
+  local OWL_PROTO_ORIGIN_MASTER=$(git show-ref origin/$CHECK_BRANCH -s)
+  local OWL_PROTO_CURRENT=$(git rev-parse HEAD)
+  if [[ "$OWL_PROTO_ORIGIN_MASTER" != "$OWL_PROTO_CURRENT" ]]; then
+    echo "サブモジュール'owl-proto'のコミットが origin/$CHECK_BRANCH と一致していないのでビルドできません";
+    # return error
+    return 1
+  fi
 }
 
 unset -f owl-helpers-deploy-zip 2> /dev/null
