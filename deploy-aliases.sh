@@ -75,8 +75,9 @@ function owl-helpers-validate-git-branch() {
   git fetch origin $CHECK_BRANCH
   local OWL_PROTO_ORIGIN_MASTER=$(git show-ref origin/$CHECK_BRANCH -s)
   local OWL_PROTO_CURRENT=$(git rev-parse HEAD)
+  cd ..
   if [[ "$OWL_PROTO_ORIGIN_MASTER" != "$OWL_PROTO_CURRENT" ]]; then
-    echo "サブモジュール'owl-proto'のコミットが origin/$CHECK_BRANCH と一致していないのでビルドできません";
+    echo "サブモジュール'owl-proto'が $CHECK_BRANCH の最新コミットと一致していないのでビルドできません";
     # return error
     return 1
   fi
