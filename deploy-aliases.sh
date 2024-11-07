@@ -47,7 +47,7 @@ function owl-helpers-merge-zip() {
       tar -xzvf ${zip_path} -C "./merge_unzip/${main_repo_name}/${repo_name}"
     fi
   done
-  cp -rf .merge_unzip_append/ merge_unzip/${main_repo_name}/
+  \cp -rf .merge_unzip_append/ merge_unzip/${main_repo_name}/
   cd merge_unzip/${main_repo_name}
   zip -rA "${main_repo_path}/deploy-${GIT_HASH}.zip" .
   cd ${main_repo_path}
