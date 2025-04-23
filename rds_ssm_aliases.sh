@@ -27,6 +27,7 @@ alias rds_ssm_ss_dev="start_rds_ssm_session ss-dev2.cluster-c9gwik3sd2yz.ap-nort
 alias rds_ssm_vod_prd_writer="start_rds_ssm_session vod2.cluster-c9gwik3sd2yz.ap-northeast-1.rds.amazonaws.com 3306 56426"
 alias rds_ssm_vod_prd_reader="start_rds_ssm_session vod2.cluster-ro-c9gwik3sd2yz.ap-northeast-1.rds.amazonaws.com 3306 56427"
 
+alias redis_ssm_micres_prd="start_rds_ssm_session oukana-nocluster.n4gbos.0001.apne1.cache.amazonaws.com 6379 56480"
 
 start_rds_ssm_session() {
   local host=$1
