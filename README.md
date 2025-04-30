@@ -11,3 +11,8 @@ curl -s -o deploy-aliases.sh https://raw.githubusercontent.com/cyber-owl/helper-
   && source deploy-aliases.sh \
   && rm deploy-aliases.sh
 ```
+
+## awsリソースへの接続aliasのセットアップ
+```bash
+curl https://raw.githubusercontent.com/cyber-owl/helper-scripts/main/rds_ssm_aliases.sh -s -o ~/rds_ssm_aliases.sh
+```

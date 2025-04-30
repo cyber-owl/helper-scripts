@@ -1,10 +1,10 @@
 #!/bin/bash
-grep -qF -- "__pycache__" ".gitignore" || echo "\n__pycache__" >> ".gitignore"
-grep -qF -- "merge_unzip" ".gitignore" || echo "\nmerge_unzip" >> ".gitignore"
-grep -qF -- ".merge_unzip_append" ".gitignore" || echo "\n.merge_unzip_append" >> ".gitignore"
-grep -qF -- "code_zips" ".gitignore" || echo "\ncode_zips" >> ".gitignore"
-grep -qF -- "deploy-*" ".gitignore" || echo "\ndeploy-*" >> ".gitignore"
-grep -qF -- "extract-secrets.py" ".gitignore" || echo "\nextract-secrets.py" >> ".gitignore"
+grep -qF -- "__pycache__" ".gitignore" || echo -e "\n__pycache__" >> ".gitignore"
+grep -qF -- "merge_unzip" ".gitignore" || echo -e "\nmerge_unzip" >> ".gitignore"
+grep -qF -- ".merge_unzip_append" ".gitignore" || echo -e "\n.merge_unzip_append" >> ".gitignore"
+grep -qF -- "code_zips" ".gitignore" || echo -e "\ncode_zips" >> ".gitignore"
+grep -qF -- "deploy-*" ".gitignore" || echo -e "\ndeploy-*" >> ".gitignore"
+grep -qF -- "extract-secrets.py" ".gitignore" || echo -e "\nextract-secrets.py" >> ".gitignore"
 
 unset -f owl-helpers-login-aws 2> /dev/null
 function owl-helpers-login-aws() {
